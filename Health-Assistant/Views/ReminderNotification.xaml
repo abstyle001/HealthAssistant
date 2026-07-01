@@ -1,0 +1,61 @@
+<Window x:Class="Health_Assistant.Views.ReminderNotification"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        Title="提醒" Height="160" Width="360"
+        WindowStartupLocation="Manual"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="True"
+        ResizeMode="NoResize">
+
+    <Border Background="#2D2D2D"
+            BorderBrush="#555555"
+            BorderThickness="1"
+            CornerRadius="12"
+            Padding="16"
+            Margin="4">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="0,0,0,8">
+                <StackPanel Orientation="Horizontal">
+                    <ui:SymbolIcon Symbol="Alert16" Foreground="#4CAF50"
+                                  Margin="0,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="健康提醒" FontWeight="SemiBold" FontSize="14"
+                               VerticalAlignment="Center" Foreground="White"/>
+                </StackPanel>
+                <ui:Button Icon="{ui:SymbolIcon Dismiss16}"
+                           HorizontalAlignment="Right"
+                           Appearance="Transparent"
+                           Click="OnCloseClick"
+                           Padding="4"/>
+            </Grid>
+
+            <TextBlock Grid.Row="1" Text="{Binding Name}"
+                       FontSize="18" FontWeight="Bold"
+                       Foreground="White"
+                       Margin="0,0,0,4"
+                       TextWrapping="Wrap"/>
+
+            <TextBlock Grid.Row="2" Text="{Binding Description}"
+                       Foreground="#B0B0B0"
+                       TextWrapping="Wrap"
+                       MaxWidth="320"
+                       Margin="0,0,0,6"/>
+
+            <TextBlock Grid.Row="3" Foreground="#888888" FontSize="12">
+                <TextBlock.Text>
+                    <Binding Path="NextTriggerTime" StringFormat="下次提醒: {0:MM-dd HH:mm}"/>
+                </TextBlock.Text>
+            </TextBlock>
+        </Grid>
+    </Border>
+</Window>

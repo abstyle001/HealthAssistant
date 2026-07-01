@@ -1,0 +1,147 @@
+<ui:FluentWindow x:Class="Health_Assistant.Views.ReminderEditDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        Title="编辑提醒" Height="520" Width="420"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ExtendsContentIntoTitleBar="True">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0" Title="编辑提醒" ShowMaximize="False"/>
+
+        <ScrollViewer Grid.Row="1" Margin="0,16,0,0">
+            <StackPanel>
+                <TextBlock Text="任务名称" Margin="0,0,0,4" FontWeight="SemiBold"/>
+                <ui:TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,16"
+                            PlaceholderText="例如: 喝水、站起来活动"/>
+
+                <TextBlock Text="描述（可选）" Margin="0,0,0,4" FontWeight="SemiBold"/>
+                <ui:TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,16"
+                            PlaceholderText="简要描述提醒内容"/>
+
+                <TextBlock Text="提醒类型" Margin="0,0,0,8" FontWeight="SemiBold"/>
+                <StackPanel Margin="0,0,0,16">
+                    <RadioButton x:Name="RadioRepeat" Content="周期重复（每天每隔X时间）"
+                                 Checked="OnRadioTypeChecked" Margin="0,0,0,4"/>
+                    <RadioButton x:Name="RadioDelay" Content="延迟一次（X分钟后提醒）"
+                                 Checked="OnRadioTypeChecked" Margin="0,0,0,4"/>
+                    <RadioButton x:Name="RadioSpecific" Content="指定时间"
+                                 Checked="OnRadioTypeChecked"/>
+                </StackPanel>
+
+                <TextBlock Text="弹窗持续时间（秒）" Margin="0,0,0,4" FontWeight="SemiBold"/>
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <ui:NumberBox Grid.Column="0" Value="{Binding PopupDuration}"
+                                  Minimum="1" Maximum="60" Margin="0,0,8,0"/>
+                    <TextBlock Grid.Column="1" Text="秒" VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextFillColorSecondaryBrush}"/>
+                </Grid>
+
+                <!-- 周期重复设置 -->
+                <StackPanel Visibility="{Binding IsRepeatMode, Converter={StaticResource BoolToVisibility}}"
+                            Margin="0,0,0,16">
+                    <TextBlock Text="每隔" Margin="0,0,0,4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ui:NumberBox Grid.Column="0" Value="{Binding IntervalValue}"
+                                      Minimum="1" Maximum="999" Margin="0,0,8,0"/>
+                        <ComboBox Grid.Column="1" Width="100"
+                                  SelectedIndex="{Binding IntervalUnitIndex}">
+                            <ComboBoxItem Content="分钟"/>
+                            <ComboBoxItem Content="小时"/>
+                        </ComboBox>
+                    </Grid>
+
+                    <TextBlock Text="开始时间（时:分）" Margin="0,8,0,4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <ui:TextBox Grid.Column="0" Text="{Binding RepeatStartHour, UpdateSourceTrigger=PropertyChanged}"
+                                    HorizontalContentAlignment="Center" MaxLength="2"/>
+                        <TextBlock Grid.Column="1" Text=":" VerticalAlignment="Center"
+                                   FontSize="18" Margin="8,0"/>
+                        <ui:TextBox Grid.Column="2" Text="{Binding RepeatStartMinute, UpdateSourceTrigger=PropertyChanged}"
+                                    HorizontalContentAlignment="Center" MaxLength="2"/>
+                    </Grid>
+
+                    <TextBlock Text="结束时间（时:分）" Margin="0,8,0,4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <ui:TextBox Grid.Column="0" Text="{Binding RepeatEndHour, UpdateSourceTrigger=PropertyChanged}"
+                                    HorizontalContentAlignment="Center" MaxLength="2"/>
+                        <TextBlock Grid.Column="1" Text=":" VerticalAlignment="Center"
+                                   FontSize="18" Margin="8,0"/>
+                        <ui:TextBox Grid.Column="2" Text="{Binding RepeatEndMinute, UpdateSourceTrigger=PropertyChanged}"
+                                    HorizontalContentAlignment="Center" MaxLength="2"/>
+                    </Grid>
+                </StackPanel>
+
+                <!-- 延迟一次设置 -->
+                <StackPanel Visibility="{Binding IsDelayMode, Converter={StaticResource BoolToVisibility}}"
+                            Margin="0,0,0,16">
+                    <TextBlock Text="多久后提醒" Margin="0,0,0,4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <ui:NumberBox Grid.Column="0" Value="{Binding DelayValue}"
+                                      Minimum="1" Maximum="999" Margin="0,0,8,0"/>
+                        <ComboBox Grid.Column="1" Width="100"
+                                  SelectedIndex="{Binding DelayUnitIndex}">
+                            <ComboBoxItem Content="分钟"/>
+                            <ComboBoxItem Content="小时"/>
+                        </ComboBox>
+                    </Grid>
+                </StackPanel>
+
+                <!-- 指定时间设置 -->
+                <StackPanel Visibility="{Binding IsSpecificMode, Converter={StaticResource BoolToVisibility}}"
+                            Margin="0,0,0,16">
+                    <TextBlock Text="选择日期" Margin="0,0,0,4"/>
+                    <DatePicker SelectedDate="{Binding TargetDate}"/>
+                    <TextBlock Text="选择时间（时:分）" Margin="0,8,0,4"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="80"/>
+                        </Grid.ColumnDefinitions>
+                        <ui:TextBox Grid.Column="0" Text="{Binding TargetHour, UpdateSourceTrigger=PropertyChanged}"
+                                    HorizontalContentAlignment="Center" MaxLength="2"/>
+                        <TextBlock Grid.Column="1" Text=":" VerticalAlignment="Center"
+                                   FontSize="18" Margin="8,0"/>
+                        <ui:TextBox Grid.Column="2" Text="{Binding TargetMinute, UpdateSourceTrigger=PropertyChanged}"
+                                    HorizontalContentAlignment="Center" MaxLength="2"/>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
+            <ui:Button Content="取消" Appearance="Secondary" Click="OnCancelClick" Margin="0,0,8,0"/>
+            <ui:Button Content="保存" Appearance="Primary" Click="OnSaveClick"/>
+        </StackPanel>
+    </Grid>
+</ui:FluentWindow>

@@ -41,6 +41,9 @@ public partial class ReminderEditDialog : FluentWindow
             case ReminderType.RepeatInterval:
                 RadioRepeat.IsChecked = true;
                 break;
+            case ReminderType.DailyTime:
+                RadioDaily.IsChecked = true;
+                break;
             case ReminderType.OneTimeDelay:
                 RadioDelay.IsChecked = true;
                 break;
@@ -57,6 +60,7 @@ public partial class ReminderEditDialog : FluentWindow
             _vm.SelectedType = rb.Name switch
             {
                 "RadioRepeat" => ReminderType.RepeatInterval,
+                "RadioDaily" => ReminderType.DailyTime,
                 "RadioDelay" => ReminderType.OneTimeDelay,
                 "RadioSpecific" => ReminderType.SpecificDateTime,
                 _ => ReminderType.RepeatInterval

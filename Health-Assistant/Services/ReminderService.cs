@@ -57,6 +57,7 @@ public class ReminderService
                 DelayValue = t.DelayValue,
                 DelayUnit = t.DelayUnit,
                 TargetDateTime = t.TargetDateTime,
+                DailyTime = t.DailyTime,
                 CreatedAt = t.CreatedAt,
                 PopupDuration = t.PopupDuration
             }).ToList();
@@ -133,7 +134,7 @@ public class ReminderService
                 {
                     triggeredIds.Add(task.Id);
 
-                    if (task.Type == ReminderType.RepeatInterval)
+                    if (task.Type == ReminderType.RepeatInterval || task.Type == ReminderType.DailyTime)
                     {
                         task.NextTriggerTime = CalculateNextTrigger(task);
                     }
@@ -173,8 +174,16 @@ public class ReminderService
             ReminderType.RepeatInterval => CalculateRepeatNext(task, now),
             ReminderType.OneTimeDelay => CalculateDelayNext(task, now),
             ReminderType.SpecificDateTime => task.TargetDateTime,
+            ReminderType.DailyTime => CalculateDailyNext(task, now),
             _ => null
         };
+    }
+
+    private static DateTime CalculateDailyNext(ReminderTask task, DateTime now)
+    {
+        var time = task.DailyTime ?? new TimeOnly(9, 0);
+        var today = now.Date.Add(time.ToTimeSpan());
+        return now < today ? today : today.AddDays(1);
     }
 
     private static DateTime CalculateRepeatNext(ReminderTask task, DateTime now)

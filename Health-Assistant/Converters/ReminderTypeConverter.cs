@@ -16,6 +16,7 @@ public class ReminderTypeConverter : IValueConverter
                 ReminderType.RepeatInterval => "ArrowClockwise16",
                 ReminderType.OneTimeDelay => "Timer16",
                 ReminderType.SpecificDateTime => "Calendar16",
+                ReminderType.DailyTime => "ClockAlarm16",
                 _ => "Question16"
             };
         }

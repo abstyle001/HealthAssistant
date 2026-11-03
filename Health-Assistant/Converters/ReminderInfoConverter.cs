@@ -8,7 +8,7 @@ public class ReminderInfoConverter : IMultiValueConverter
 {
     public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
     {
-        if (values.Length < 8 || values[0] is not ReminderType type)
+        if (values.Length < 9 || values[0] is not ReminderType type)
             return string.Empty;
 
         return type switch
@@ -16,8 +16,16 @@ public class ReminderInfoConverter : IMultiValueConverter
             ReminderType.RepeatInterval => BuildRepeatInfo(values),
             ReminderType.OneTimeDelay => BuildDelayInfo(values),
             ReminderType.SpecificDateTime => BuildDateTimeInfo(values),
+            ReminderType.DailyTime => BuildDailyInfo(values),
             _ => string.Empty
         };
+    }
+
+    private static string BuildDailyInfo(object[] values)
+    {
+        if (values[8] is TimeOnly t)
+            return $"每天 {t:HH:mm} 定时提醒";
+        return "每天定时提醒";
     }
 
     private static string BuildRepeatInfo(object[] values)

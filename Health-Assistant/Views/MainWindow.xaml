@@ -73,6 +73,7 @@
                                                         <Binding Path="DelayValue"/>
                                                         <Binding Path="DelayUnit"/>
                                                         <Binding Path="TargetDateTime"/>
+                                                        <Binding Path="DailyTime"/>
                                                     </MultiBinding>
                                                 </TextBlock.Text>
                                             </TextBlock>

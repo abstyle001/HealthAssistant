@@ -4,7 +4,8 @@ public enum ReminderType
 {
     RepeatInterval,
     OneTimeDelay,
-    SpecificDateTime
+    SpecificDateTime,
+    DailyTime
 }
 
 public enum IntervalUnit
@@ -29,6 +30,8 @@ public class ReminderTask
     public IntervalUnit DelayUnit { get; set; }
 
     public DateTime? TargetDateTime { get; set; }
+
+    public TimeOnly? DailyTime { get; set; }
 
     public bool IsActive { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.Now;

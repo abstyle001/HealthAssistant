@@ -29,6 +29,7 @@ public class ReminderEditViewModel : ViewModelBase
                 OnPropertyChanged(nameof(IsRepeatMode));
                 OnPropertyChanged(nameof(IsDelayMode));
                 OnPropertyChanged(nameof(IsSpecificMode));
+                OnPropertyChanged(nameof(IsDailyMode));
             }
         }
     }
@@ -119,6 +120,32 @@ public class ReminderEditViewModel : ViewModelBase
         set => SetProperty(ref _delayValue, value);
     }
 
+    private string _dailyHour = "09";
+    public string DailyHour
+    {
+        get => _dailyHour;
+        set
+        {
+            if (TrySetTimePart(ref _dailyHour, value, 23))
+                OnPropertyChanged(nameof(DailyTimeOfTask));
+        }
+    }
+
+    private string _dailyMinute = "00";
+    public string DailyMinute
+    {
+        get => _dailyMinute;
+        set
+        {
+            if (TrySetTimePart(ref _dailyMinute, value, 59))
+                OnPropertyChanged(nameof(DailyTimeOfTask));
+        }
+    }
+
+    public TimeOnly DailyTimeOfTask =>
+        new(int.TryParse(_dailyHour, out var h) ? Math.Clamp(h, 0, 23) : 9,
+            int.TryParse(_dailyMinute, out var m) ? Math.Clamp(m, 0, 59) : 0);
+
     private IntervalUnit _delayUnit = IntervalUnit.Minutes;
     public IntervalUnit DelayUnit
     {
@@ -195,6 +222,7 @@ public class ReminderEditViewModel : ViewModelBase
     public bool IsRepeatMode => SelectedType == ReminderType.RepeatInterval;
     public bool IsDelayMode => SelectedType == ReminderType.OneTimeDelay;
     public bool IsSpecificMode => SelectedType == ReminderType.SpecificDateTime;
+    public bool IsDailyMode => SelectedType == ReminderType.DailyTime;
 
     public void LoadFromTask(ReminderTask task)
     {
@@ -220,6 +248,10 @@ public class ReminderEditViewModel : ViewModelBase
         TargetHour = TargetDateTime.Hour.ToString("D2");
         TargetMinute = TargetDateTime.Minute.ToString("D2");
 
+        var daily = task.DailyTime ?? new TimeOnly(9, 0);
+        DailyHour = daily.Hour.ToString("D2");
+        DailyMinute = daily.Minute.ToString("D2");
+
         PopupDuration = task.PopupDuration;
     }
 
@@ -238,6 +270,7 @@ public class ReminderEditViewModel : ViewModelBase
             DelayValue = DelayValue,
             DelayUnit = DelayUnit,
             TargetDateTime = TargetDateTime,
+            DailyTime = DailyTimeOfTask,
             IsActive = true,
             PopupDuration = PopupDuration
         };
